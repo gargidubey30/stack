@@ -1,0 +1,98 @@
+class Node {
+public:
+    int key, val;
+    Node* prev;
+    Node* next;
+
+    Node(int _key, int _val) {
+        key = _key;
+        val = _val;
+        prev = next = nullptr;
+    }
+};
+class LRUCache {
+
+    public:
+unordered_map<int,Node*>mpp;
+int capacity;
+Node* head;
+Node* tail;
+
+ LRUCache(int _capacity) {
+        capacity = _capacity;
+        mpp.clear();
+
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+
+        head->next = tail;
+        tail->prev = head;
+    }
+    
+      void deleteNode(Node* node){
+
+        Node* prevnode=node->prev;
+       Node* afternode=node->next;
+        prevnode->next=afternode;
+        afternode->prev=prevnode;
+
+      }
+
+     void insertatHead( Node* node){
+
+        Node* currAfterHead=head->next;
+        head->next=node;
+        node->prev = head;
+        node->next= currAfterHead;
+        currAfterHead->prev = node;
+
+    } 
+
+   
+    
+    int get(int key) {
+        // not found
+        if(mpp.find(key)== mpp.end())
+         return -1;
+
+        // found
+        Node* node=mpp[key];
+
+  // Move to head (most recently used)
+        deleteNode(node);
+        insertatHead(node);
+        return node->val;
+        
+    }
+    
+    void put(int key, int value) {
+       //  found
+         if(mpp.find(key)!= mpp.end()) {
+            Node* node=mpp[key];
+            node->val=value;
+
+            deleteNode(node);
+            insertatHead(node);
+
+         }
+
+           //  not found
+
+         else{
+             // Remove least recently used node if capacity full
+            if (mpp.size() == capacity) {
+                Node* lru = tail->prev;
+                mpp.erase(lru->key);
+                deleteNode(lru);
+                delete lru;
+            }
+            Node* node= new Node(key,value);
+            mpp[key]=node;
+            insertatHead(node);
+
+         }
+
+        
+    }
+};
+
