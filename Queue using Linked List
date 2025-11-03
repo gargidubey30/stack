@@ -28,6 +28,7 @@ public:
 
     void enqueue(int x) {
         Node* newNode = new Node(x);
+      // first node 
         if (rear == nullptr) {
             front = rear = newNode;
         } else {
@@ -41,6 +42,7 @@ public:
         if (isEmpty()) return;
         Node* temp = front;
         front = front->next;
+// single node 
         if (front == nullptr) rear = nullptr;
         delete temp;
         count--;
